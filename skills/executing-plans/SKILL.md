@@ -49,6 +49,33 @@ After all tasks complete and verified:
 - **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice
 
+### Team Mode (Claude Code Only)
+
+Before executing the first batch, check if the `TeamCreate` tool is available. If it is, ask the user: "Agent teams are available. Would you like to parallelize tasks within batches, or proceed with standard sequential execution?" If not available or the user declines, use the standard sequential flow.
+
+**Note:** `TeamCreate`, `TaskCreate`, `TaskUpdate`, `TaskList`, `SendMessage`, and `TeamDelete` are Claude Code built-in tools provided by the runtime as part of the teams API (currently in beta).
+
+**What changes:**
+- Step 2 (Execute Batch): Instead of executing 3 tasks sequentially, assign batch tasks to team members working in parallel
+- Step 3 (Report): Wait for all batch members to complete, then report combined results
+- Steps 1, 4, 5: Unchanged (plan review, feedback loop, and completion stay the same)
+
+**Independence constraint:** Only parallelize tasks within a batch if they are independent (touch different files, no implicit dependencies). If tasks in a batch may conflict, fall back to sequential execution for that batch.
+
+**What doesn't change:**
+- Batch boundaries and human review checkpoints remain
+- Default batch size is still 3 tasks
+- "Ready for feedback" checkpoint after each batch
+- The human-in-the-loop approval between batches is preserved
+
+**Team lifecycle:**
+1. `TeamCreate` once before the first batch
+2. For each batch: assign tasks to team members, wait for all to complete, report results, wait for feedback
+3. Reuse the same team across batches (no need to recreate)
+4. `TeamDelete` after the final batch completes and all work is done
+
+**Cross-platform note:** Team mode requires Claude Code with teams enabled (beta). On Codex, OpenCode, or Claude Code without teams, use the standard sequential batch execution.
+
 ## When to Stop and Ask for Help
 
 **STOP executing immediately when:**
