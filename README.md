@@ -60,7 +60,7 @@ This fork integrates Claude Code-native features into the Superpowers workflow.
 /plugin marketplace add pcvelz/superpowers
 
 # Install plugin
-/plugin install superpowers-extended-cc@superpowers-extended-cc-marketplace
+/plugin install superpowers-jordan@superpowers-jordan-marketplace
 ```
 
 ### Option 2: Direct URL
@@ -79,9 +79,9 @@ Check that commands appear:
 
 ```
 # Should see:
-# /superpowers-extended-cc:brainstorming - Interactive design refinement
-# /superpowers-extended-cc:writing-plans - Create implementation plan
-# /superpowers-extended-cc:executing-plans - Execute plan in batches
+# /superpowers-jordan:brainstorming - Interactive design refinement
+# /superpowers-jordan:writing-plans - Create implementation plan
+# /superpowers-jordan:executing-plans - Execute plan in batches
 ```
 
 Start a new session and ask for something that should trigger a skill (for example, "help me plan this feature"). The agent should automatically invoke the relevant superpowers skill.
@@ -172,7 +172,7 @@ This blocks the model from calling `EnterPlanMode`, ensuring the brainstorming a
 Skills update automatically when you update the plugin:
 
 ```bash
-/plugin update superpowers-extended-cc@superpowers-extended-cc-marketplace
+/plugin update superpowers-jordan@superpowers-jordan-marketplace
 ```
 
 ## Upstream Compatibility

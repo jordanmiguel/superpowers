@@ -74,10 +74,10 @@ Based on feedback:
 
 After all tasks complete and verified:
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use superpowers-extended-cc:finishing-a-development-branch
+- **REQUIRED SUB-SKILL:** Use superpowers-jordan:finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice
 
-### Team Mode (Claude Code Only)
+### Team Mode
 
 Before executing the first batch, check if the `TeamCreate` tool is available. If it is, ask the user: "Agent teams are available. Would you like to parallelize tasks within batches, or proceed with standard sequential execution?" If not available or the user declines, use the standard sequential flow.
 
@@ -134,6 +134,5 @@ Before executing the first batch, check if the `TeamCreate` tool is available. I
 ## Integration
 
 **Required workflow skills:**
-- **superpowers-extended-cc:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers-extended-cc:writing-plans** - Creates the plan this skill executes
-- **superpowers-extended-cc:finishing-a-development-branch** - Complete development after all tasks
+- **superpowers-jordan:writing-plans** - Creates the plan this skill executes
+- **superpowers-jordan:finishing-a-development-branch** - Complete development after all tasks

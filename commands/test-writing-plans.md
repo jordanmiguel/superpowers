@@ -28,7 +28,7 @@ IMPORTANT: At the end, report which tools you called in order, specifically:
 1. Did you call TaskList as the first tool? (yes/no)
 2. Did you call EnterPlanMode or ExitPlanMode at any point? (yes/no)
 3. Did you call AskUserQuestion at the end? (yes/no)
-4. Did you save the plan to docs/plans/YYYY-MM-DD-*.md? (yes/no)
+4. Did you save the plan to docs/plans/<feature-name>/YYYY-MM-DD-*.md? (yes/no)
 5. Did you save .tasks.json next to the plan? (yes/no)"""
 )
 ```

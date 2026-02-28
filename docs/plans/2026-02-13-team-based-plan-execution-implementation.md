@@ -8,7 +8,7 @@
 
 **Tech Stack:** Markdown skill files (SKILL.md), Claude Code built-in tools for team creation and messaging (TeamCreate, SendMessage, TeamDelete) and task management (TaskCreate, TaskUpdate, TaskList), plus the existing Task tool
 
-**Design doc:** `docs/plans/2026-02-13-team-based-plan-execution-design.md`
+**Design doc:** `docs/plans/<feature-name>/2026-02-13-team-based-plan-execution-design.md`
 
 ---
 
@@ -33,7 +33,7 @@ After saving the plan, check for team support and offer execution choice:
 **Detection:** Before presenting options, check if the `TeamCreate` tool is available in this environment.
 If it is, include Option 3 below. If not, only show Options 1 and 2.
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Execution options:**
+**"Plan complete and saved to `docs/plans/<feature-name>/<filename>.md`. Execution options:**
 
 **1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
 

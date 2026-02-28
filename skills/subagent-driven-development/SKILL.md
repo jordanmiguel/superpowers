@@ -69,7 +69,7 @@ digraph process {
     "Read plan, extract tasks, TaskCreate for each with full text" [shape=box];
     "More tasks remain?" [shape=diamond];
     "Dispatch final code reviewer subagent for entire implementation" [shape=box];
-    "Use superpowers-extended-cc:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
+    "Use superpowers-jordan:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, extract tasks, TaskCreate for each with full text" -> "Dispatch implementer subagent (./implementer-prompt.md)";
     "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
@@ -88,11 +88,11 @@ digraph process {
     "TaskUpdate: mark task completed" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use superpowers-extended-cc:finishing-a-development-branch";
+    "Dispatch final code reviewer subagent for entire implementation" -> "Use superpowers-jordan:finishing-a-development-branch";
 }
 ```
 
-## Team Mode (Claude Code Only)
+## Team Mode
 
 When the user opts into team mode and `TeamCreate` is available, use this alternative flow instead of the standard sequential process above.
 
@@ -187,7 +187,7 @@ digraph team_process {
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
 
-[Read plan file once: docs/plans/feature-plan.md]
+[Read plan file once: docs/plans/<feature-name>/feature-plan.md]
 [Extract all 5 tasks with full text and context]
 [TaskCreate for each task with full description]
 
@@ -331,13 +331,12 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **superpowers-extended-cc:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers-extended-cc:writing-plans** - Creates the plan this skill executes
-- **superpowers-extended-cc:requesting-code-review** - Code review template for reviewer subagents
-- **superpowers-extended-cc:finishing-a-development-branch** - Complete development after all tasks
+- **superpowers-jordan:writing-plans** - Creates the plan this skill executes
+- **superpowers-jordan:requesting-code-review** - Code review template for reviewer subagents
+- **superpowers-jordan:finishing-a-development-branch** - Complete development after all tasks
 
 **Subagents should use:**
-- **superpowers-extended-cc:test-driven-development** - Subagents follow TDD for each task
+- **superpowers-jordan:test-driven-development** - Subagents follow TDD for each task
 
 **Alternative workflow:**
-- **superpowers-extended-cc:executing-plans** - Use for parallel session instead of same-session execution
+- **superpowers-jordan:executing-plans** - Use for parallel session instead of same-session execution

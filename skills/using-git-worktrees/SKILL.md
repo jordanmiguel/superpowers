@@ -17,6 +17,17 @@ Git worktrees create isolated workspaces sharing the same repository, allowing w
 
 Follow this priority order:
 
+### 0. Ask User
+
+First, ask user if he wants you to create a worktree, if not, skip this skill.
+
+```
+Would you like me to create a worktree?
+
+1. Yes
+2. No (Proceed in the current branch)
+```
+
 ### 1. Check Existing Directories
 
 ```bash
