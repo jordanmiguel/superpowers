@@ -5,6 +5,10 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 # Writing Plans
 
+## CRITICAL CONSTRAINTS — Read Before Anything Else
+
+**You MUST NOT call `EnterPlanMode` or `ExitPlanMode` at any point during this skill.** This skill operates in normal mode and manages its own completion flow via `AskUserQuestion`. Calling `EnterPlanMode` traps the session in plan mode where Write/Edit are restricted. Calling `ExitPlanMode` breaks the workflow and skips the user's execution choice. If you feel the urge to call either, STOP — follow this skill's instructions instead.
+
 ## Overview
 
 Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
@@ -15,7 +19,21 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** This should be run in a dedicated worktree (created by brainstorming skill).
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `docs/plans/<feature-name>/YYYY-MM-DD-<feature-name>.md`
+
+## REQUIRED FIRST STEP: Initialize Task Tracking
+
+**BEFORE exploring code or writing the plan, you MUST:**
+
+1. Call `TaskList` to check for existing tasks from brainstorming
+2. If tasks exist: you will enhance them with implementation details as you write the plan
+3. If no tasks: you will create them with `TaskCreate` as you write each plan task
+
+**Do not proceed to exploration until TaskList has been called.**
+
+```
+TaskList
+```
 
 ## Bite-Sized Task Granularity
 
@@ -33,7 +51,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers-extended-cc:executing-plans to implement this plan task-by-task.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -98,29 +116,116 @@ git commit -m "feat: add specific feature"
 
 After saving the plan, check for team support and offer execution choice:
 
-**Detection:** Before presenting options, check if the `TeamCreate` tool is available in this environment. If it is, include Option 3 below. If not, only show Options 1 and 2.
-
 **"Plan complete and saved to `docs/plans/<filename>.md`. Execution options:**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+<HARD-GATE>
+STOP. You are about to complete the plan. DO NOT call EnterPlanMode or ExitPlanMode. You MUST call AskUserQuestion below. Both are FORBIDDEN — EnterPlanMode traps the session, ExitPlanMode skips the user's execution choice.
+</HARD-GATE>
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+Your ONLY permitted next action is calling `AskUserQuestion` with this EXACT structure:
 
-**3. Team-Based (parallel, this session)** *(only if TeamCreate is available)* - Spawn an agent team with parallel implementers and reviewers, coordinated via shared task list
+```yaml
+AskUserQuestion:
+  question: "Plan complete and saved to docs/plans/<feature-name>/<filename>.md. How would you like to execute it?"
+  header: "Execution"
+  options:
+    - label: "Subagent-Driven (this session)"
+      description: "I dispatch fresh subagent per task, review between tasks, fast iteration"
+    - label: "Parallel Session (separate)"
+      description: "Open new session in worktree with executing-plans, batch execution with checkpoints"
+    - label: "Team-Based (parallel, this session)"
+      description: "Spawn an agent team with parallel implementers and reviewers, coordinated via shared task list"
+```
 
-**Which approach?"**
+**If you are about to call ExitPlanMode, STOP — call AskUserQuestion instead.**
 
 **If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
+- **REQUIRED SUB-SKILL:** Use superpowers-extended-cc:subagent-driven-development
 - Stay in this session
 - Fresh subagent per task + code review
 
 **If Parallel Session chosen:**
 - Guide them to open new session in worktree
-- **REQUIRED SUB-SKILL:** New session uses superpowers:executing-plans
+- **REQUIRED SUB-SKILL:** New session uses superpowers-extended-cc:executing-plans
 
 **If Team-Based chosen:**
 - **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development (team mode)
 - Stay in this session
 - `TeamCreate` to spawn parallel implementers
 - Shared `TaskList` for coordination
+---
+
+## Native Task Integration Reference
+
+Use Claude Code's native task tools (v2.1.16+) to create structured tasks alongside the plan document.
+
+### Creating Native Tasks
+
+For each task in the plan, create a corresponding native task:
+
+```
+TaskCreate:
+  subject: "Task N: [Component Name]"
+  description: |
+    [Copy the full task content from the plan you just wrote — files, steps, acceptance criteria, everything]
+  activeForm: "Implementing [Component Name]"
+```
+
+### Setting Dependencies
+
+After all tasks created, set blockedBy relationships:
+
+```
+TaskUpdate:
+  taskId: [task-id]
+  addBlockedBy: [prerequisite-task-ids]
+```
+
+### During Execution
+
+Update task status as work progresses:
+
+```
+TaskUpdate:
+  taskId: [task-id]
+  status: in_progress  # when starting
+
+TaskUpdate:
+  taskId: [task-id]
+  status: completed    # when done
+```
+
+### Notes
+
+- Native tasks provide CLI-visible progress tracking
+- Plan document remains the permanent record
+
+---
+
+## Task Persistence
+
+At plan completion, write the task persistence file **in the same directory as the plan document**.
+
+If the plan is saved to `docs/plans/<feature-name>/2026-01-15-feature.md`, the tasks file MUST be saved to `docs/plans/<feature-name>/2026-01-15-feature.md.tasks.json`.
+
+```json
+{
+  "planPath": "docs/plans/<feature-name>/2026-01-15-feature.md",
+  "tasks": [
+    {"id": 0, "subject": "Task 0: ...", "status": "pending"},
+    {"id": 1, "subject": "Task 1: ...", "status": "pending", "blockedBy": [0]}
+  ],
+  "lastUpdated": "<timestamp>"
+}
+```
+
+Both the plan `.md` and `.tasks.json` must be co-located in `docs/plans/<feature-name>/`.
+
+### Resuming Work
+
+Any new session can resume by running:
+```
+/superpowers-extended-cc:executing-plans <plan-path>
+```
+
+The skill reads the `.tasks.json` file and continues from where it left off.
