@@ -2,8 +2,8 @@
   "name": "superpowers-jordan-marketplace",
   "description": "Marketplace for Superpowers Extended CC - Claude Code-specific enhancements",
   "owner": {
-    "name": "pcvelz",
-    "email": "pcvelz@users.noreply.github.com"
+    "name": "jordanmiguel",
+    "email": "jordanmiguel@users.noreply.github.com"
   },
   "plugins": [
     {
@@ -12,8 +12,8 @@
       "version": "4.3.4",
       "source": "./",
       "author": {
-        "name": "pcvelz",
-        "email": "pcvelz@users.noreply.github.com"
+        "name": "jordanmiguel",
+        "email": "jordanmiguel@users.noreply.github.com"
       }
     }
   ]
